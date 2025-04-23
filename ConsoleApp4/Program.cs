@@ -1,146 +1,110 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Threading;
 
 namespace ConsoleApp4
 {
     class Program
     {
-        static void ThreadTest()
-        {
-            
-            Console.WriteLine("Hellow, world" + new Random().Next());
-
-        }
         static void Main(string[] args)
         {
+            int rowsA = 200; // Specify the number of rows for matrix A
+            int colsA = 200; // Specify the number of columns for matrix A
+            int colsB = 200; // Specify the number of columns for matrix B
 
-    int[,] matrixA = new int[,] {
-    {1, 2, 3,4},
-    {4, 5, 6,5},
-    {7, 8, 9,6},
-    {10, 11, 12,7}
-};
-                int[,] matrixB = new int[,] {
-    {1, 2, 3,4},
-    {4, 5, 6,5},
-    {7, 8, 9,6},
-    {10, 11, 12,7}
-};
-                int[,] resultMatrix = new int[,] {
-    {0, 0, 0,0},
-    {0, 0, 0,0},
-    {0, 0, 0,0},
-    {0, 0, 0,0},
+            int[,] matrixA = GenerateRandomMatrix(rowsA, colsA);
+            int[,] matrixB = GenerateRandomMatrix(colsA, colsB); // colsA for rows of matrix B
+            int[,] resultMatrix = new int[rowsA, colsB];
 
-};
+            Console.WriteLine("Matrix A:");
+            PrintMatrix(matrixA);
+            Console.WriteLine("\nMatrix B:");
+            PrintMatrix(matrixB);
 
+            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA, matrixB, resultMatrix, rowsA, colsA, colsB, 4);
 
-            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA,matrixB,resultMatrix,4,4,4,2);
+            Console.WriteLine("\nResult Matrix:");
+            PrintMatrix(resultMatrix);
+        }
 
+        static int[,] GenerateRandomMatrix(int rows, int cols)
+        {
+            Random rand = new Random();
+            int[,] matrix = new int[rows, cols];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    matrix[i, j] = rand.Next(1, 10); // Random numbers between 1 and 9
+                }
+            }
+
+            return matrix;
+        }
+
+        static void PrintMatrix(int[,] matrix)
+        {
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                {
+                    Console.Write(matrix[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
         }
     }
+
     class MatrixMultiplier
     {
-        public static void MatrixMultiplierThread(int[,]matrixA, int[,]matrixB, int[,] resultMatrix,int rowStart, int rowEnd,int rowsA, int colsA, int colsB) //The thread, passing all needed info
+        public static void MatrixMultiplierThread(int[,] matrixA, int[,] matrixB, int[,] resultMatrix, int rowStart, int rowEnd, int rowsA, int colsA, int colsB)
         {
-            Console.WriteLine($"starting row: {rowEnd}");
-            for (int curr_Row = rowStart; curr_Row < rowEnd; curr_Row++) //Going through the needed rows for this thread
+            for (int curr_Row = rowStart; curr_Row < rowEnd; curr_Row++)
             {
-                
-                for(int k = 0; k < colsB; k++) //Going through each column in matrixB
-                { 
-
-                    for(int curr_Col = 0; curr_Col<colsA; curr_Col++) //Calculating the sum of the current Row * current Column and inserting to the respective place in the result matrix
-                       
+                for (int k = 0; k < colsB; k++)
+                {
+                    for (int curr_Col = 0; curr_Col < colsA; curr_Col++)
                     {
-                        Console.WriteLine($"current row: {curr_Row}");
-                        Console.WriteLine($"current row: {k}");
-                        Console.WriteLine($"result matrix row: {resultMatrix[curr_Row, k]}");
-                        Console.WriteLine($"columns: {colsA}");
                         resultMatrix[curr_Row, k] += matrixA[curr_Row, curr_Col] * matrixB[curr_Col, k];
                     }
                 }
-                
             }
         }
-        public static void MultiplyMatricesConcurrently(int[,]matrixA, int[,]matrixB, int[,] resultMatrix, int rowsA, int colsA, int colsB, int numThreads)
+
+        public static void MultiplyMatricesConcurrently(int[,] matrixA, int[,] matrixB, int[,] resultMatrix, int rowsA, int colsA, int colsB, int numThreads)
         {
             int amountPerThread = rowsA / numThreads;
-       
-            if (amountPerThread * numThreads != rowsA)
-            {
-                amountPerThread++;
-            Console.WriteLine($"Amount per thread: {amountPerThread}");
+            int remainder = rowsA % numThreads;
+            
             Thread[] threads = new Thread[numThreads];
-            for(int i =0; i < numThreads-1; i++)
+
+            for (int i = 0; i < numThreads; i++)
             {
-                Console.WriteLine($"yasssrow: {i*amountPerThread}");
-                threads[i] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (i-1)*amountPerThread, i*amountPerThread,rowsA,colsA,colsB));
-                
-            }
-            threads[numThreads-1] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (numThreads-1)*amountPerThread, rowsA,rowsA,colsA,colsB));
-            for(int i = 0; i < numThreads; i++)
+                int rowStart = i * amountPerThread;
+                int rowEnd = (i + 1) * amountPerThread;
+
+                if (i == numThreads - 1)
                 {
-                      threads[i].Start();
+                    rowEnd += remainder; 
                 }
 
+                threads[i] = new Thread(() => MatrixMultiplierThread(matrixA, matrixB, resultMatrix, rowStart, rowEnd, rowsA, colsA, colsB));
+                threads[i].Start();
+            }
 
-
-            for(int i = 0; i < numThreads; i++)
+            for (int i = 0; i < numThreads; i++)
             {
                 threads[i].Join();
             }
 
-
-            for(int i =0; i < rowsA; i++)
+            for (int i = 0; i < rowsA; i++)
             {
                 for (int j = 0; j < colsB; j++)
                 {
-                    Console.WriteLine(resultMatrix[i,j]);
+                    Console.Write(resultMatrix[i, j] + " ");
                 }
+                Console.WriteLine();
             }
-            }
-                
-
-
-
-            else
-            {
-
-                 Console.WriteLine($"Amount per thread: {amountPerThread}");
-            Thread[] threads = new Thread[numThreads];
-            for(int i =0; i < numThreads; i++)
-            {
-                Console.WriteLine($"yasssrow: {i*amountPerThread}");
-                threads[i] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (i-1)*amountPerThread, i*amountPerThread,rowsA,colsA,colsB));
-              
-            }
-            for(int i = 0; i < numThreads; i++)
-                {
-                      threads[i].Start();
-                }
-
-            for(int i = 0; i < numThreads; i++)
-            {
-                threads[i].Join();
-            }
-
-
-            for(int i =0; i < rowsA; i++)
-            {
-                for (int j = 0; j < colsB; j++)
-                {
-                    Console.WriteLine("th result: "+resultMatrix[i,j]);
-                }
-            }
-            }
-
-
         }
     }
 }
