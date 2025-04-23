@@ -7,12 +7,12 @@ namespace ConsoleApp4
     {
         static void Main(string[] args)
         {
-            int rowsA = 200; // Specify the number of rows for matrix A
-            int colsA = 200; // Specify the number of columns for matrix A
-            int colsB = 200; // Specify the number of columns for matrix B
+            int rowsA = 200; 
+            int colsA = 200; 
+            int colsB = 200; 
 
-            int[,] matrixA = GenerateRandomMatrix(rowsA, colsA);
-            int[,] matrixB = GenerateRandomMatrix(colsA, colsB); // colsA for rows of matrix B
+            int[,] matrixA = GenerateRandomMatrix(rowsA, colsA); //Generating matrices to test the function
+            int[,] matrixB = GenerateRandomMatrix(colsA, colsB); 
             int[,] resultMatrix = new int[rowsA, colsB];
 
             Console.WriteLine("Matrix A:");
@@ -20,13 +20,13 @@ namespace ConsoleApp4
             Console.WriteLine("\nMatrix B:");
             PrintMatrix(matrixB);
 
-            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA, matrixB, resultMatrix, rowsA, colsA, colsB, 4);
+            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA, matrixB, resultMatrix, rowsA, colsA, colsB, 4); //using 4 threads, can be adjusted
 
             Console.WriteLine("\nResult Matrix:");
             PrintMatrix(resultMatrix);
         }
 
-        static int[,] GenerateRandomMatrix(int rows, int cols)
+        static int[,] GenerateRandomMatrix(int rows, int cols) //function to generate a random matrix, for testing
         {
             Random rand = new Random();
             int[,] matrix = new int[rows, cols];
@@ -57,6 +57,7 @@ namespace ConsoleApp4
 
     class MatrixMultiplier
     {
+        //static function for each thread
         public static void MatrixMultiplierThread(int[,] matrixA, int[,] matrixB, int[,] resultMatrix, int rowStart, int rowEnd, int rowsA, int colsA, int colsB)
         {
             for (int curr_Row = rowStart; curr_Row < rowEnd; curr_Row++)
@@ -73,6 +74,7 @@ namespace ConsoleApp4
 
         public static void MultiplyMatricesConcurrently(int[,] matrixA, int[,] matrixB, int[,] resultMatrix, int rowsA, int colsA, int colsB, int numThreads)
         {
+            
             int amountPerThread = rowsA / numThreads;
             int remainder = rowsA % numThreads;
             
