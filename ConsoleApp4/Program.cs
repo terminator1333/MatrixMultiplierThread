@@ -20,26 +20,27 @@ namespace ConsoleApp4
         {
 
     int[,] matrixA = new int[,] {
-    {1, 2, 3},
-    {4, 5, 6},
-    {7, 8, 9},
-    {10, 11, 12}
+    {1, 2, 3,4},
+    {4, 5, 6,5},
+    {7, 8, 9,6},
+    {10, 11, 12,7}
 };
                 int[,] matrixB = new int[,] {
-    {1, 2, 3},
-    {4, 5, 6},
-    {7, 8, 9},
-    {10, 11, 12}
+    {1, 2, 3,4},
+    {4, 5, 6,5},
+    {7, 8, 9,6},
+    {10, 11, 12,7}
 };
                 int[,] resultMatrix = new int[,] {
-    {0, 0, 0},
-    {0, 0, 0},
-    {0, 0, 0},
+    {0, 0, 0,0},
+    {0, 0, 0,0},
+    {0, 0, 0,0},
+    {0, 0, 0,0},
 
 };
 
 
-            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA,matrixB,resultMatrix,3,3,3,2);
+            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA,matrixB,resultMatrix,4,4,4,2);
 
         }
     }
@@ -80,10 +81,16 @@ namespace ConsoleApp4
             {
                 Console.WriteLine($"yasssrow: {i*amountPerThread}");
                 threads[i] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (i-1)*amountPerThread, i*amountPerThread,rowsA,colsA,colsB));
-                threads[i].Start();
+                
             }
             threads[numThreads-1] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (numThreads-1)*amountPerThread, rowsA,rowsA,colsA,colsB));
-            threads[numThreads-1].Start();
+            for(int i = 0; i < numThreads; i++)
+                {
+                      threads[i].Start();
+                }
+
+
+
             for(int i = 0; i < numThreads; i++)
             {
                 threads[i].Join();
@@ -111,8 +118,12 @@ namespace ConsoleApp4
             {
                 Console.WriteLine($"yasssrow: {i*amountPerThread}");
                 threads[i] = new Thread(() => MatrixMultiplierThread(matrixA,matrixB, resultMatrix, (i-1)*amountPerThread, i*amountPerThread,rowsA,colsA,colsB));
-                threads[i].Start();
+              
             }
+            for(int i = 0; i < numThreads; i++)
+                {
+                      threads[i].Start();
+                }
 
             for(int i = 0; i < numThreads; i++)
             {
@@ -124,13 +135,9 @@ namespace ConsoleApp4
             {
                 for (int j = 0; j < colsB; j++)
                 {
-                    Console.WriteLine(resultMatrix[i,j]);
+                    Console.WriteLine("th result: "+resultMatrix[i,j]);
                 }
             }
-
-
-
-
             }
 
 
