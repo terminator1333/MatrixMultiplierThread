@@ -1,0 +1,7 @@
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\bin\Debug\MultiThread2.exe.config
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\bin\Debug\MultiThread2.exe
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\bin\Debug\MultiThread2.pdb
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\obj\Debug\MultiThread2.csproj.AssemblyReference.cache
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\obj\Debug\MultiThread2.csproj.CoreCompileInputs.cache
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\obj\Debug\MultiThread2.exe
+C:\Users\lenga\Desktop\MultiThread2\MultiThread2\obj\Debug\MultiThread2.pdb
