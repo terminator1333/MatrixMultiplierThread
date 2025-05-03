@@ -7,52 +7,10 @@ namespace ConsoleApp4
     {
         static void Main(string[] args)
         {
-            int rowsA = 200; 
-            int colsA = 200; 
-            int colsB = 200; 
 
-            int[,] matrixA = GenerateRandomMatrix(rowsA, colsA); //Generating matrices to test the function
-            int[,] matrixB = GenerateRandomMatrix(colsA, colsB); 
-            int[,] resultMatrix = new int[rowsA, colsB];
-
-            Console.WriteLine("Matrix A:");
-            PrintMatrix(matrixA);
-            Console.WriteLine("\nMatrix B:");
-            PrintMatrix(matrixB);
-
-            MatrixMultiplier.MultiplyMatricesConcurrently(matrixA, matrixB, resultMatrix, rowsA, colsA, colsB, 4); //using 4 threads, can be adjusted
-
-            Console.WriteLine("\nResult Matrix:");
-            PrintMatrix(resultMatrix);
+            
         }
 
-        static int[,] GenerateRandomMatrix(int rows, int cols) //function to generate a random matrix, for testing
-        {
-            Random rand = new Random();
-            int[,] matrix = new int[rows, cols];
-
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    matrix[i, j] = rand.Next(1, 10); // Random numbers between 1 and 9
-                }
-            }
-
-            return matrix;
-        }
-
-        static void PrintMatrix(int[,] matrix)
-        {
-            for (int i = 0; i < matrix.GetLength(0); i++)
-            {
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                {
-                    Console.Write(matrix[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
-        }
     }
 
     class MatrixMultiplier
