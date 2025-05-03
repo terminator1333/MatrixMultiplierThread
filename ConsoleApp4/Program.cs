@@ -56,15 +56,6 @@ namespace ConsoleApp4
             {
                 threads[i].Join();
             }
-
-            for (int i = 0; i < rowsA; i++)
-            {
-                for (int j = 0; j < colsB; j++)
-                {
-                    Console.Write(resultMatrix[i, j] + " ");
-                }
-                Console.WriteLine();
-            }
         }
     }
 }
